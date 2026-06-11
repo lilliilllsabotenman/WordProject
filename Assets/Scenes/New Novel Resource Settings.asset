@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8792f12d21daa66458b6d433fc792572, type: 3}
+  m_Name: New Novel Resource Settings
+  m_EditorClassIdentifier: 
+  option:
+    typingSpeed: 0.02
+    Character:
+    - sr: {fileID: 11400000, guid: aaf781a3681c5024e93a85226b0e1096, type: 2}
+      spriteData:
+      - CharacterKey: {fileID: 11400000, guid: aaf781a3681c5024e93a85226b0e1096, type: 2}
+        KeyEnum: normal
+        CharactorSprite: {fileID: 1634114862732455561, guid: 5605a346772890c44908ae2224de5ecd, type: 3}
+    - sr: {fileID: 11400000, guid: d82a83c0e992f7a41a1af5b12f75810e, type: 2}
+      spriteData:
+      - CharacterKey: {fileID: 11400000, guid: d82a83c0e992f7a41a1af5b12f75810e, type: 2}
+        KeyEnum: normal
+        CharactorSprite: {fileID: 9068903083612988343, guid: bffa6105d9f848149b4a77bec45581bf, type: 3}
+    - sr: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
+      spriteData:
+      - CharacterKey: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
+        KeyEnum: normal
+        CharactorSprite: {fileID: 620405429636648041, guid: 790ddedadbfec72469af8816e7e1e7c3, type: 3}
