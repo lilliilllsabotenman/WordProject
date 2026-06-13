@@ -6,7 +6,7 @@ using TMPro;
 /// </summary>
 public class WordObject : MonoBehaviour
 {
-    [Header("Word Binding: このUIに対応する単語データ")]
+    [Header("このUIに対応する単語データ")]
     [SerializeField] private WordAsset wordAsset;
 
     private TextMeshProUGUI displayText;

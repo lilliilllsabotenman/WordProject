@@ -563,11 +563,13 @@ public class NovelEventManager : MonoBehaviour
         IsPlaying = false;
 
         OnDialogueFinished?.Invoke();
+        OnDialogueFinished = null;
     }
 
-    public void Play(TextAsset csv)
+    public void Play(TextAsset csv, Action finishAction)
     {
         Debug.Log("Play");
+        OnDialogueFinished += finishAction;
         _ = PlayAsync(csv);
     }
 

@@ -778,8 +778,6 @@ MonoBehaviour:
   wordLayer:
     serializedVersion: 2
     m_Bits: 4294967295
-  gameManagtement: {fileID: 1824537052}
-  sentenceText: {fileID: 1802608663}
 --- !u!212 &829531810
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2200,9 +2198,15 @@ MonoBehaviour:
   gameData: {fileID: 11400000, guid: e819f07e1326ca942a7a7d612a62dedb, type: 2}
   novelEventManager: {fileID: 2078506091}
   textObject: {fileID: 1296400433}
-  sentenceText: {fileID: 1802608663}
+  sentenceText: {fileID: 1802608664}
   lifeManager:
-    objects: []
+    objects:
+    - {fileID: 696748107}
+    - {fileID: 11966664}
+    - {fileID: 1530636243}
+    - {fileID: 949534359}
+    - {fileID: 1251766413}
+  mouse: {fileID: 829531809}
 --- !u!1 &2078506090
 GameObject:
   m_ObjectHideFlags: 0
@@ -2214,7 +2218,7 @@ GameObject:
   - component: {fileID: 2078506092}
   - component: {fileID: 2078506091}
   m_Layer: 0
-  m_Name: TestNovelManager
+  m_Name: NovelManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

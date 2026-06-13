@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class TextScaleAnimation : MonoBehaviour
 {
@@ -9,10 +10,13 @@ public class TextScaleAnimation : MonoBehaviour
     private float speed = 3f;
 
     private Vector3 baseScale;
-
     private TMPro.TextMeshProUGUI TMP;
 
-    private float time = 0;
+    private float elapsedTime = 0f;
+    private float limitTime = 0f;
+    private bool isRunning = false;
+
+    private event Action IsTimeUp;
 
     private void Awake()
     {
@@ -22,10 +26,17 @@ public class TextScaleAnimation : MonoBehaviour
 
     private void Update()
     {
-        time += Time.deltaTime;
+        if(!isRunning) return;
 
-        float scale = 1f + (time * speed) * amplitude;
+        elapsedTime += Time.deltaTime;
+
+        float scale = 1f + (elapsedTime * speed) * amplitude;
         transform.localScale = baseScale * scale;
+
+        if(elapsedTime >= limitTime) 
+        {
+            IsTimeUp?.Invoke();
+        }
     }
 
     public void isFinished()
@@ -33,10 +44,15 @@ public class TextScaleAnimation : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-    public void SetText(string txt)
+    public void InitializeEnemyText(EnemyData data, Action action)
     {
         if(TMP == null) return;
         transform.localScale = baseScale;
-        TMP.text = txt;
+        TMP.text = data.enemyText;
+        elapsedTime = 0;
+        limitTime = data.limitTime;
+        isRunning = true;
+
+        IsTimeUp += action;
     }
 }

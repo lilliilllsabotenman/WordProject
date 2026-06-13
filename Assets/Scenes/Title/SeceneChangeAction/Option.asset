@@ -19,6 +19,12 @@ MonoBehaviour:
     legacySlotDefinition:
       answer: {fileID: 0}
       acceptType: 0
+  - type: 0
+    fixedText: "\u3092"
+    slotDefinition: {fileID: 0}
+    legacySlotDefinition:
+      answer: {fileID: 0}
+      acceptType: 0
   - type: 1
     fixedText: 
     slotDefinition: {fileID: 11400000, guid: b4f9f29c85619164aa55ca0b8e515693, type: 2}

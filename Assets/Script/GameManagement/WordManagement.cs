@@ -12,20 +12,27 @@ public class WordManager
     {
         wordObjects = objects;
         this.wordPool = wordPool;
+
+        UnityEngine.Debug.Log(wordPool.Count);
     }
 
     public void Initialize(SentenceTemplate template)
     {
-        answerWords = template == null
-            ? new List<WordAsset>()
-            : template.elements
-                .Where(e => e.IsValidInputSlot())
-                .Select(e => e.GetSlotWord())
-                .Where(w => w != null)
-                .ToList();
+        Initialize(template, false);
+    }
+
+    public void Initialize(SentenceTemplate template, bool allowDuplicate)
+    {
+        answerWords = template.GetWordAssetsList();
+
+        if (answerWords.Count > wordObjects.Count)
+        {
+            UnityEngine.Debug.LogError("回答数がWordObject数を超えています");
+            return;
+        }
 
         ActivateObjects();
-        AssignWordAssets();
+        AssignWordAssets(allowDuplicate);
     }
 
     private void ActivateObjects()
@@ -36,35 +43,30 @@ public class WordManager
         }
     }
 
-    private void AssignWordAssets()
+    private void AssignWordAssets(bool allowDuplicate)
     {
         List<WordAsset> spawnWords = new();
         spawnWords.AddRange(answerWords);
 
         int remain = wordObjects.Count - spawnWords.Count;
 
-        List<WordAsset> shuffledPool = new(wordPool);
+        List<WordAsset> shuffledPool = allowDuplicate
+            ? new List<WordAsset>(wordPool)
+            : new List<WordAsset>(wordPool.Where(x => !answerWords.Contains(x)));
+
         Shuffle(shuffledPool);
 
-        for (int i = 0; i < remain; i++)
+        for (int i = 0; i < remain && i < shuffledPool.Count; i++)
         {
-            if (i >= shuffledPool.Count)
-            {
-                break;
-            }
-
             spawnWords.Add(shuffledPool[i]);
         }
 
         Shuffle(spawnWords);
 
-        for (int i = 0; i < wordObjects.Count; i++)
-        {
-            if (i >= spawnWords.Count)
-            {
-                break;
-            }
+        UnityEngine.Debug.Log($"Spawn Words Count : {spawnWords.Count}");
 
+        for (int i = 0; i < wordObjects.Count && i < spawnWords.Count; i++)
+        {
             wordObjects[i].SetWordAsset(spawnWords[i]);
         }
     }

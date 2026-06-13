@@ -9,7 +9,7 @@ public class GameSequenceData : ScriptableObject
 
     public bool isCanPlaing()
     {
-        if(this.rounds == null || this.rounds.Count >= 0) return false;
+        if(this.rounds == null || this.rounds.Count <= 0) return false;
 
         return true;
     }
