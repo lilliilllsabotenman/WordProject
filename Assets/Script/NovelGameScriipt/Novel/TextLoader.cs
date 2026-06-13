@@ -69,10 +69,10 @@ namespace NovelGameDialogue
         [NonSerialized] public TextMeshProUGUI CharacterText;
         [NonSerialized] public TextMeshProUGUI dialogueText;
 
-        [Header("Typing speed")]
+        [Header("テキストの更新スピード")]
         [Range(0, 0.5f)] public float typingSpeed;
 
-        [Header("Character resources")]
+        [Header("キャラクターのデータ")]
         public List<CharactorToList> Character;
     }
 
@@ -241,6 +241,7 @@ namespace NovelGameDialogue
                 {
                     character.enabled = true;
                     character.sprite = resolvedSprite;
+                    //ここでダイアログ表示
                 }
                 else if (requiresSpriteUpdate)
                 {
@@ -286,6 +287,7 @@ namespace NovelGameDialogue
                 if (character != null)
                 {
                     character.sprite = null;
+                    //ここで非表示
                 }
             }
 

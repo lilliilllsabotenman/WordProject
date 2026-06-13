@@ -25,6 +25,11 @@ public class NovelEventManager : MonoBehaviour
     [Header("キャラ名表示(未使用なら未設定でOK)")]
     [SerializeField] private TMPro.TextMeshProUGUI CharacterNamePlate;
 
+    [Header("会話ウィンドウ")]
+    [SerializeField] private GameObject DialogueWindow;
+
+    public bool isEvent;
+
     private TextAsset DialogueCSV;
     private TextDialogueOption textOption;
     private SpriteDictionary spriteDictionary;
@@ -126,10 +131,11 @@ public class NovelEventManager : MonoBehaviour
 
     private void Start()
     {
+        if(isEvent) return;
         _ = Novel();
     }
 
-    private async Task Novel()
+    private async Task Novel()//Todoこれをループにまとめられると思うのでそうしろ！！演出含め！！
     {
         // for (int i = 0; i < novelGameSettings.Count; i++)
         // {
@@ -568,7 +574,7 @@ public class NovelEventManager : MonoBehaviour
 
     public void Play(TextAsset csv, Action finishAction)
     {
-        Debug.Log("Play");
+        Debug.Log(csv);
         OnDialogueFinished += finishAction;
         _ = PlayAsync(csv);
     }

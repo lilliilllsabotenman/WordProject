@@ -48,6 +48,7 @@ public class BattleManager
         Action gameOver)
     {
         roundData = data;
+        ReactivateWordObjects();
 
         this.battleFinished = battleFinished;
         this.gameOver = gameOver;
@@ -59,6 +60,22 @@ public class BattleManager
         wordSlot.Initialize(roundData.enemyData.sentenceTemplate);
         textObject.InitializeEnemyText(roundData.enemyData,GameOver);
         wordManager.Initialize(roundData.enemyData.sentenceTemplate);
+    }
+
+    public void DeactivateBattleObjects()
+    {
+        wordManager.DeactivateAll();
+        textObject.isFinished();
+    }
+
+    /// <summary>
+    /// 呼び出し側からノベル終了後にバトル用WordObject群を復帰させるための仲介API。
+    /// </summary>
+    public void ReactivateWordObjects()
+    {
+        wordManager.ActivateObjects();
+        textObject.isFinished();
+        textObject.gameObject.SetActive(true);
     }
 
     private void Incorrect()

@@ -10,11 +10,15 @@ public class MouseControll : MonoBehaviour
     [Header("Input Filter")]
     public LayerMask wordLayer;
 
+
+    public bool IsControll = true;//API化必須
     private event Action<WordAsset> PushWordAsset;
 
     private void Update()
     {
         UpdateMousePosition();
+
+        if(!IsControll) return;
 
         if (Input.GetMouseButtonDown(0))
         {

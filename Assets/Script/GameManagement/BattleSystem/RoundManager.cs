@@ -42,6 +42,8 @@ public class RoundManager
 
         if (!round.skipDialogue)
         {
+            battleManager.DeactivateBattleObjects();
+
             novelEventManager.Play(round.dialogueCSV, NovelFinished);
 
             return;

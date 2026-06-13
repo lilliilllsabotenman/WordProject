@@ -21,9 +21,10 @@ public class WordSlot
 
     public void Initialize(SentenceTemplate answer)
     {
+        AnswerWordList.Clear();
         AnswerSentence = answer;
         AnswerWordList = answer.GetWordAssetsList();
-        AnswerWordList.Clear();
+
         words.Clear();
 
         viewUIText.TextInitialize(AnswerSentence);

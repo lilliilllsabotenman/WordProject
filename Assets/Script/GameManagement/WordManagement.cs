@@ -35,7 +35,15 @@ public class WordManager
         AssignWordAssets(allowDuplicate);
     }
 
-    private void ActivateObjects()
+    public void DeactivateAll()
+    {
+        foreach (var obj in wordObjects)
+        {
+            obj.gameObject.SetActive(false);
+        }
+    }
+
+    public void ActivateObjects()
     {
         foreach (var obj in wordObjects)
         {

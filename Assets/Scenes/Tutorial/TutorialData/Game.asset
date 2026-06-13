@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ad63db2b975cfe4d92f892e00345c15, type: 3}
+  m_Name: Game
+  m_EditorClassIdentifier: 
+  rounds:
+  - enemyData:
+      enemyText: "\u904B\u547D\u3092\u53D7\u3051\u5165\u308C\u308D"
+      sentenceTemplate: {fileID: 11400000, guid: 405d940f25d23ee4daa86baa76b4857e, type: 2}
+      limitTime: 9999999
+    dialogueCSV: {fileID: 0}
+    skipDialogue: 0
