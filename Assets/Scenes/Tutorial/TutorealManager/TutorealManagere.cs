@@ -88,4 +88,9 @@ public class TutorealManagere : MonoBehaviour
     {
         novelEventManager.Play(novelGameSettings[1].DialogueCSV, tutoreal3);
     }
+    
+    void tutoreal4()
+    {
+    	novelEventManager.Play(novelGameSettings[2].DialogueCSV, tutoreal5);
+  	}
 }
