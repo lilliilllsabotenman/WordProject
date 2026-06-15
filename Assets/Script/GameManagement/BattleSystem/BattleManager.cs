@@ -39,6 +39,7 @@ public class BattleManager
 
         wordManager = new WordManager(wordObjects, wordPool);
 
+        if(mouse == null) return;
         mouse.MouseSubscrive(GetWordAsset);
     }
 

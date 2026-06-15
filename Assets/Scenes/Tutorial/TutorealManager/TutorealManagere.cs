@@ -25,15 +25,22 @@ public class TutorealManagere : MonoBehaviour
     [Header("単語選択用マウスカーソル")]
     [SerializeField] private MouseControll mouse;
 
+    [Header("正解用WordAssets")]
+    [SerializeField] private WordAsset word_1;
+
+    private MouseControll m = null;
     private RoundManager roundManager;
+
+    private readonly ViewUIText viewUIText;
+    private readonly WordManager wordManager;
 
     private void Awake()
     {
-        var battleManager = new BattleManager(
+        BattleManager battleManager = new BattleManager(
             textObject,
             sentenceText,
             lifeManager,
-            mouse,
+            m,
             new List<WordObject>(FindObjectsByType<WordObject>(FindObjectsSortMode.None)),
             new List<WordAsset>(Resources.LoadAll<WordAsset>("WordSettings/WordAssets"))
         );
@@ -67,82 +74,18 @@ public class TutorealManagere : MonoBehaviour
     void tutoreal()
     {
         sentenceText.gameObject.SetActive(false);
-        Debug.Log("1");
+        Debug.Log(novelGameSettings[0].DialogueCSV);
         novelEventManager.Play(novelGameSettings[0].DialogueCSV, tutoreal2);
     }
 
     void tutoreal2()
     {
+        sentenceText.gameObject.SetActive(true);
         novelEventManager.Play(novelGameSettings[1].DialogueCSV, tutoreal3);
     }
 
     void tutoreal3()
     {
-        novelEventManager.Play(novelGameSettings[2].DialogueCSV, tutoreal4);
-    }
-
-    void tutoreal4()
-    {
-        novelEventManager.Play(novelGameSettings[3].DialogueCSV, tutoreal5);
-    }
-
-    void tutoreal5()
-    {
-        novelEventManager.Play(novelGameSettings[4].DialogueCSV, tutoreal6);
-    }
-
-    void tutoreal6()
-    {
-        novelEventManager.Play(novelGameSettings[5].DialogueCSV, tutoreal7);
-    }
-
-    void tutoreal7()
-    {
-        novelEventManager.Play(novelGameSettings[6].DialogueCSV, tutoreal8);
-    }
-
-    void tutoreal8()
-    {
-        novelEventManager.Play(novelGameSettings[7].DialogueCSV, tutoreal9);
-    }
-
-    void tutoreal9()
-    {
-        novelEventManager.Play(novelGameSettings[8].DialogueCSV, tutoreal10);
-    }
-
-    void tutoreal10()
-    {
-        novelEventManager.Play(novelGameSettings[9].DialogueCSV, tutoreal11);
-    }
-
-    void tutoreal11()
-    {
-        novelEventManager.Play(novelGameSettings[10].DialogueCSV, tutoreal12);
-    }
-
-    void tutoreal12()
-    {
-        novelEventManager.Play(novelGameSettings[11].DialogueCSV, tutoreal13);
-    }
-
-    void tutoreal13()
-    {
-        novelEventManager.Play(novelGameSettings[12].DialogueCSV, tutoreal14);
-    }
-
-    void tutoreal14()
-    {
-        novelEventManager.Play(novelGameSettings[13].DialogueCSV, tutoreal15);
-    }
-
-    void tutoreal15()
-    {
-        novelEventManager.Play(novelGameSettings[14].DialogueCSV, tutoreal16);
-    }
-
-    void tutoreal16()
-    {
-        // チュートリアル終了処理
+        novelEventManager.Play(novelGameSettings[1].DialogueCSV, tutoreal3);
     }
 }

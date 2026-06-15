@@ -241,7 +241,6 @@ namespace NovelGameDialogue
                 {
                     character.enabled = true;
                     character.sprite = resolvedSprite;
-                    //ここでダイアログ表示
                 }
                 else if (requiresSpriteUpdate)
                 {
@@ -251,6 +250,14 @@ namespace NovelGameDialogue
                 if (optionData.dialogueText != null && !optionData.dialogueText.gameObject.activeSelf)
                 {
                     optionData.dialogueText.gameObject.SetActive(true);
+
+                    
+                    Transform parent = optionData.dialogueText.transform.parent;
+
+                    if(parent != null)
+                    {
+                        parent.gameObject.SetActive(true);
+                    }
                 }
 
                 if (optionData.CharacterText != null && !optionData.CharacterText.gameObject.activeSelf)
@@ -287,7 +294,9 @@ namespace NovelGameDialogue
                 if (character != null)
                 {
                     character.sprite = null;
-                    //ここで非表示
+                    
+                    
+
                 }
             }
 
@@ -295,6 +304,12 @@ namespace NovelGameDialogue
             {
                 optionData.dialogueText.text = string.Empty;
                 optionData.dialogueText.gameObject.SetActive(false);
+                Transform parent = optionData.dialogueText.transform.parent;
+
+                if(parent != null)
+                {
+                    parent.gameObject.SetActive(false);
+                }
             }
 
             if (optionData.CharacterText != null)

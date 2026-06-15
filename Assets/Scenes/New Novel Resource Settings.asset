@@ -30,3 +30,8 @@ MonoBehaviour:
       - CharacterKey: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
         KeyEnum: normal
         CharactorSprite: {fileID: 620405429636648041, guid: 790ddedadbfec72469af8816e7e1e7c3, type: 3}
+    - sr: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
+      spriteData:
+      - CharacterKey: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
+        KeyEnum: respon
+        CharactorSprite: {fileID: 620405429636648041, guid: 790ddedadbfec72469af8816e7e1e7c3, type: 3}
