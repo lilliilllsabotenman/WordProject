@@ -304,10 +304,11 @@ namespace NovelGameDialogue
             {
                 optionData.dialogueText.text = string.Empty;
                 optionData.dialogueText.gameObject.SetActive(false);
-                Transform parent = optionData.dialogueText.transform.parent;
-                Canvas canvas = parent.gameObject.GetComponent<Canvas>();
+              
+                Transform parent = optionData.dialogueText.transform.parent;    
+                Canvas  canvas = parent.gameObject.GetComponent<Canvas>();
 
-                if (parent != null && canvas == null)
+                if(parent != null && canvas == null)
                 {
                     parent.gameObject.SetActive(false);
                 }
@@ -385,7 +386,7 @@ namespace NovelGameDialogue
             }
         }
 
-        private static async Task WaitUntilAsync(Func<bool> predicate)
+        public static async Task WaitUntilAsync(Func<bool> predicate)
         {
             while (!predicate())
             {

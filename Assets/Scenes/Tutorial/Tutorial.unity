@@ -2158,8 +2158,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278193407
-  m_fontColor: {r: 1, g: 0.045656554, b: 0, a: 1}
+    rgba: 3327
+  m_fontColor: {r: 1, g: 0.045656554, b: 0, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2272,6 +2272,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3680963f0a73254e8e693114af30269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tutorealData:
+    a: {fileID: 11400000, guid: b16c83b5451caec4fa4e63efd9151295, type: 2}
+    c: {fileID: 11400000, guid: 7caa01e3ace299840a95ee3c51a2e469, type: 2}
+    d: {fileID: 11400000, guid: 8c481edb5a298c643bbe3ed52c23d8df, type: 2}
+    e: {fileID: 11400000, guid: 3bf0d89ba6b5ba2438c08a8a6bfd0829, type: 2}
+    f: {fileID: 0}
+    g: {fileID: 11400000, guid: 63aa40d1148ac904182f4fa4073096ba, type: 2}
+    h: {fileID: 11400000, guid: 0b9290c64cd37be4fbe8c1dd00f76e1b, type: 2}
   gameData: {fileID: 11400000, guid: b8f4850ddd17be443a0ffa9227ec3600, type: 2}
   novelGameSettings:
   - {fileID: 11400000, guid: b16c83b5451caec4fa4e63efd9151295, type: 2}
@@ -2282,7 +2290,8 @@ MonoBehaviour:
   lifeManager:
     objects: []
   mouse: {fileID: 829531809}
-  word_1: {fileID: 0}
+  Answer_1: {fileID: 0}
+  Answer_2: {fileID: 0}
 --- !u!1 &2078506090
 GameObject:
   m_ObjectHideFlags: 0
@@ -2319,7 +2328,7 @@ MonoBehaviour:
   NarrationText: {fileID: 0}
   CharacterDialogueText: {fileID: 2103721048}
   CharacterNamePlate: {fileID: 0}
-  isEvent: 1
+  isEvent: 0
 --- !u!4 &2078506092
 Transform:
   m_ObjectHideFlags: 0
