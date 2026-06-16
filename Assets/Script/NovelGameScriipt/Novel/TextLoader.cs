@@ -251,10 +251,10 @@ namespace NovelGameDialogue
                 {
                     optionData.dialogueText.gameObject.SetActive(true);
 
-                    
+
                     Transform parent = optionData.dialogueText.transform.parent;
 
-                    if(parent != null)
+                    if (parent != null)
                     {
                         parent.gameObject.SetActive(true);
                     }
@@ -294,8 +294,8 @@ namespace NovelGameDialogue
                 if (character != null)
                 {
                     character.sprite = null;
-                    
-                    
+
+
 
                 }
             }
@@ -305,8 +305,9 @@ namespace NovelGameDialogue
                 optionData.dialogueText.text = string.Empty;
                 optionData.dialogueText.gameObject.SetActive(false);
                 Transform parent = optionData.dialogueText.transform.parent;
+                Canvas canvas = parent.gameObject.GetComponent<Canvas>();
 
-                if(parent != null)
+                if (parent != null && canvas == null)
                 {
                     parent.gameObject.SetActive(false);
                 }
