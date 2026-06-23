@@ -2,7 +2,7 @@
 using NovelGameDialogue;
 
 [CreateAssetMenu(menuName = "Novel/DialogueSettings")]
-public class NovelGameSettings : ScriptableObject
+public class NovelGameSettings : NovelGameData
 {
     [Header("会話タイプ")]
     public DialogueType dialogueType;
@@ -10,4 +10,3 @@ public class NovelGameSettings : ScriptableObject
     [Header("TextData")]
     public TextAsset DialogueCSV;
 }
-

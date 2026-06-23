@@ -577,6 +577,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   novelGameSettings:
   - {fileID: 11400000, guid: a0f5a0da0c9abae46b250dce366e3b00, type: 2}
+  - {fileID: 11400000, guid: 800931d07c5b9a541bbc44e1c2ba9c75, type: 2}
   - {fileID: 11400000, guid: 99f81c45d61e5d04ba9b28ca65ffe43d, type: 2}
   - {fileID: 11400000, guid: 46bd6f4f5c4007144ac5f5d6cf2ea637, type: 2}
   - {fileID: 11400000, guid: 25146b1763ef7fe4e8d956299f9ab4dd, type: 2}
@@ -622,6 +623,8 @@ GameObject:
   m_Component:
   - component: {fileID: 881318539}
   - component: {fileID: 881318538}
+  - component: {fileID: 881318540}
+  - component: {fileID: 881318541}
   m_Layer: 0
   m_Name: FeedSpriteWhite
   m_TagString: FIrestFeedObject
@@ -699,6 +702,41 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &881318540
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881318537}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: dd3ef86357312f742af0395962196a5c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &881318541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881318537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f5e7784c2d554245a7d1ea7010116de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: {fileID: 11400000, guid: 8b73fe7977ab7744dafd0649f8ea7b04, type: 2}
 --- !u!1 &951851124
 GameObject:
   m_ObjectHideFlags: 0

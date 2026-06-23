@@ -23,24 +23,5 @@ namespace NovelGameDialogue
             this.runtimeCommandConverter = runtimeCommandConverter ?? throw new ArgumentNullException(nameof(runtimeCommandConverter));
             this.animationExecuter = animationExecuter ?? throw new ArgumentNullException(nameof(animationExecuter));
         }
-
-        public async Task ExecuteAnimationAsync(AnimationActionData action)
-        {
-            if (action == null || action.Character == null || action.Animation == null)
-            {
-                return;
-            }
-
-            AnimationTargetCapabilities target = targetResolver.Resolve(action.Character);
-            if (target == null)
-            {
-                Debug.LogWarning($"Character renderer not found for key: {action.Character.name}");
-                return;
-            }
-
-            AnimationRuntimeData runtimeData = animationConverter.Convert(action.Animation, target);
-            IRuntimeCommand command = runtimeCommandConverter.Convert(runtimeData);
-            await animationExecuter.Execute(command);
-        }
     }
 }

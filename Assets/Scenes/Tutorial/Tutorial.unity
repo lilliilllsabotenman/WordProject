@@ -2158,8 +2158,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 3327
-  m_fontColor: {r: 1, g: 0.045656554, b: 0, a: 0}
+    rgba: 255
+  m_fontColor: {r: 1, g: 0, b: 0, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2277,7 +2277,7 @@ MonoBehaviour:
     c: {fileID: 11400000, guid: 7caa01e3ace299840a95ee3c51a2e469, type: 2}
     d: {fileID: 11400000, guid: 8c481edb5a298c643bbe3ed52c23d8df, type: 2}
     e: {fileID: 11400000, guid: 3bf0d89ba6b5ba2438c08a8a6bfd0829, type: 2}
-    f: {fileID: 0}
+    f: {fileID: 11400000, guid: 691f9c5dfea017b48a372b5af93ff785, type: 2}
     g: {fileID: 11400000, guid: 63aa40d1148ac904182f4fa4073096ba, type: 2}
     h: {fileID: 11400000, guid: 0b9290c64cd37be4fbe8c1dd00f76e1b, type: 2}
   gameData: {fileID: 11400000, guid: b8f4850ddd17be443a0ffa9227ec3600, type: 2}

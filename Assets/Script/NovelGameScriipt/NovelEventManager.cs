@@ -8,7 +8,7 @@ using MyTween;
 public class NovelEventManager : MonoBehaviour
 {
     [Header("会話データ設定")]
-    [SerializeField] private List<NovelGameSettings> novelGameSettings;
+    [SerializeField] private List<NovelGameData> novelGameSettings;
 
     [Header("共通表示設定")]
     [SerializeField] private NovelResourceSettings commonResourceSettings;
@@ -34,6 +34,7 @@ public class NovelEventManager : MonoBehaviour
     private Dictionary<CharacterKey, CharacterSpriteRenderer> characterRegistry;
     private MassageExecuter mExecuter;
     private NovelScheduler novelScheduler;
+    private NovelAnimationManager animationManager;
 
     
     public bool IsPlaying { get; private set; }
@@ -129,6 +130,9 @@ public class NovelEventManager : MonoBehaviour
 
     private void Start()
     {
+        animationManager = new NovelAnimationManager(
+            UnityEngine.Object.FindObjectsByType<NovelAnimationObject>(FindObjectsSortMode.None));
+
         if(isEvent) return;
         _ = Novel();
     }
@@ -237,23 +241,17 @@ public class NovelEventManager : MonoBehaviour
         return textOption.dialogueText != null;
     }
 
-    public async Task PlayAnimationAsync(AnimationActionData actionData)
-    {
-        if (novelScheduler == null || actionData == null)
-        {
-            return;
-        }
-
-        await novelScheduler.ExecuteAnimationAsync(actionData);
-    }
-
 #region 会話ループ
 
     private async Task Novel()
     {
-        foreach (NovelGameSettings setting in novelGameSettings)
+        foreach (NovelGameData setting in novelGameSettings)
         {
-            await PlayAsync(setting);
+            if(setting is NovelGameSettings csv)
+                await PlayAsync(csv);
+            if(setting is NovelAnimationSettings anim)
+                await animationManager.PlayAnimation(anim);
+                
         }
 
         // UnityEngine.SceneManagement.SceneManager.LoadScene("SampleGameScene");
