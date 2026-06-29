@@ -5,6 +5,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NovelGameDialogue;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class TutorealNovelData
@@ -70,7 +71,9 @@ public class TutorealManagere : MonoBehaviour
     [Header("正解用WordAssets")]
     [SerializeField] private WordAsset Answer_2;
 
-    private MouseControll m = null;
+    [Header("トーン♡")]
+    [SerializeField] private Image t1;
+    
     private RoundManager roundManager;
 
     private readonly ViewUIText viewUIText;
@@ -87,23 +90,6 @@ public class TutorealManagere : MonoBehaviour
 
     private void Awake()
     {
-        BattleManager battleManager = new BattleManager(
-            textObject,
-            sentenceText,
-            lifeManager,
-            m,
-            new List<WordObject>(FindObjectsByType<WordObject>(FindObjectsSortMode.None)),
-            new List<WordAsset>(Resources.LoadAll<WordAsset>("WordSettings/WordAssets"))
-        );
-
-        roundManager = new RoundManager(
-            gameData,
-            novelEventManager,
-            battleManager,
-            Clear,
-            GameOver);
-
-        roundManager.InitializeCurrentRound();
     }
 
     private void Clear()
@@ -130,6 +116,9 @@ public class TutorealManagere : MonoBehaviour
 
         await MassageExecuter.WaitUntilAsync(() => Input.GetMouseButtonDown(0));
 
+        t1.gameObject.SetActive(false);       
+        
+
         while (true)
         {
             Color color = sentenceText.color;
@@ -150,39 +139,86 @@ public class TutorealManagere : MonoBehaviour
         
         await MassageExecuter.WaitUntilAsync(() => Input.GetMouseButtonDown(0));
 
+        t1.gameObject.SetActive(true); 
+        t1.transform.SetSiblingIndex(7); 
+
+        await MassageExecuter.WaitUntilAsync(() => Input.GetMouseButtonDown(0));
 
         await novelEventManager.PlayAsync(tutorealData.c);
 
-        //文字強調
+        
+        WordObject[] words = UnityEngine.Object.FindObjectsByType<WordObject>(FindObjectsSortMode.None);
+        List<GameObject> wObj = new ();
+        foreach(WordObject w in words)
+        {
+            wObj.Add(w.gameObject);
+        }
+
+        foreach(GameObject w in wObj)
+        {
+            w.SetActive(true);
+        }
+
 
         Answer = Answer_1;
         mouse.MouseSubscrive(JudgmentWord);
         
         await MassageExecuter.WaitUntilAsync(() => GetWord);
 
-        while(bAnswer_1)
+        while(!bAnswer_1)
         {
+            foreach(GameObject w in wObj)
+            {
+                w.SetActive(true);
+            }
+
             await novelEventManager.PlayAsync(tutorealData.d);
 
             await MassageExecuter.WaitUntilAsync(() => GetWord);
             GetWord = false;
         }
 
+        // t1.gameObject.SetActive(false); 
+        t1.transform.SetSiblingIndex(9); 
+
         await novelEventManager.PlayAsync(tutorealData.e);
 
+        GameObject aaa = null;
+
+        foreach(GameObject w in wObj)
+        {
+            if(!w.activeSelf)
+            {
+                aaa = w;
+            }
+        }
+
+        wObj.Remove(aaa);
+
+        await MassageExecuter.WaitUntilAsync(() => Input.GetMouseButtonDown(0));
+
+        await novelEventManager.PlayAsync(tutorealData.f);
 
         Answer = Answer_2;
 
+        t1.gameObject.SetActive(false); 
+
         await MassageExecuter.WaitUntilAsync(() => GetWord);
 
-        while(bAnswer_2)
+        while(!bAnswer_2)
         {
-            await novelEventManager.PlayAsync(tutorealData.f);
+            foreach(GameObject w in wObj)
+            {
+                w.SetActive(true);
+            }
+
+            await novelEventManager.PlayAsync(tutorealData.d);
 
             await MassageExecuter.WaitUntilAsync(() => GetWord);
             GetWord = false;
         }
 
+        t1.gameObject.SetActive(true); 
         await novelEventManager.PlayAsync(tutorealData.g);
 
         //演出
