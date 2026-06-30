@@ -1,61 +1,61 @@
 using UnityEngine;
-using TMPro;
 using System.Collections.Generic;
 
 public class ViewUIText
 {
-    private TextMeshProUGUI Text;
+    private Transform container;
+    private WordCardView cardPrefab;
     private SentenceTemplate template;
     private List<WordAsset> words = new();
+    private List<WordCardView> slotCards = new();
 
-    public ViewUIText(TextMeshProUGUI Text)
+    public ViewUIText(Transform container, WordCardView cardPrefab)
     {
-        this.Text = Text;
+        this.container = container;
+        this.cardPrefab = cardPrefab;
     }
 
     public void TextInitialize(SentenceTemplate template)
     {
         this.template = template;
         words.Clear();
-        
-        if(Text == null) Debug.LogError("ViewText : TextMeshProの参照がありません。Inspectorを確認してください");
-
-        UpdateText();
+        ClearCards();
+        BuildCards();
     }
 
-    private void UpdateText()
+    private void ClearCards()
     {
-        string viewText = "";
+        foreach (Transform child in container)
+            Object.Destroy(child.gameObject);
+        slotCards.Clear();
+    }
 
-        int SlotCount = 0;
+    private void BuildCards()
+    {
+        if (container == null) { Debug.LogError("ViewUIText: コンテナの参照がありません"); return; }
+        if (cardPrefab == null) { Debug.LogError("ViewUIText: カードプレハブの参照がありません"); return; }
 
-        foreach(SentenceElement e in template.elements)
+        foreach (var element in template.elements)
         {
-            switch(e.type)
+            var card = Object.Instantiate(cardPrefab, container);
+            if (element.type == SentenceElementType.FixedText)
             {
-                case SentenceElementType.FixedText:
-                    viewText += e.fixedText;
-                    break;
-                case SentenceElementType.Slot:
-                        
-                    if(words.Count > SlotCount) 
-                    {    
-                        viewText += words[SlotCount].DisplayText;
-                        SlotCount ++;
-                    }
-                    else viewText += "■"; 
-                    break;
-            }             
+                card.SetFixedText(element.fixedText ?? string.Empty);
+            }
+            else
+            {
+                card.SetEmpty();
+                slotCards.Add(card);
+            }
         }
-        Debug.Log(viewText);
-
-
-        Text.text = viewText;
     }
 
     public void AddWord(WordAsset word)
     {
+        int slotIndex = words.Count;
         words.Add(word);
-        UpdateText();
+
+        if (slotIndex < slotCards.Count)
+            slotCards[slotIndex].SetWord(word);
     }
 }

@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
+using UnityEngine;
 
 public class BattleManager
 {
     private readonly TextScaleAnimation textObject;
-    private readonly TextMeshProUGUI sentenceText;
     private readonly LifeManager lifeManager;
     private readonly MouseControll mouse;
 
@@ -22,18 +21,18 @@ public class BattleManager
 
     public BattleManager(
         TextScaleAnimation textObject,
-        TextMeshProUGUI sentenceText,
+        Transform wordContainer,
+        WordCardView wordCardPrefab,
         LifeManager lifeManager,
         MouseControll mouse,
         List<WordObject> wordObjects,
         List<WordAsset> wordPool)
     {
         this.textObject = textObject;
-        this.sentenceText = sentenceText;
         this.lifeManager = lifeManager;
         this.mouse = mouse;
 
-        viewUIText = new ViewUIText(sentenceText);
+        viewUIText = new ViewUIText(wordContainer, wordCardPrefab);
 
         wordSlot = new WordSlot(IsFulled, viewUIText);
 

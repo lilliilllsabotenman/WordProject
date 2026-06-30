@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class GameManagement : MonoBehaviour
 {
@@ -13,8 +12,9 @@ public class GameManagement : MonoBehaviour
     [Header("敵の文字表示・制限時間管理")]
     [SerializeField] private TextScaleAnimation textObject;
 
-    [Header("反論組み立て用テキスト")]
-    [SerializeField] private TextMeshProUGUI sentenceText;
+    [Header("反論組み立てカード")]
+    [SerializeField] private Transform wordContainer;
+    [SerializeField] private WordCardView wordCardPrefab;
 
     [Header("プレイヤーライフ管理")]
     [SerializeField] private LifeManager lifeManager;
@@ -28,7 +28,8 @@ public class GameManagement : MonoBehaviour
     {
         var battleManager = new BattleManager(
             textObject,
-            sentenceText,
+            wordContainer,
+            wordCardPrefab,
             lifeManager,
             mouse,
             new List<WordObject>(FindObjectsByType<WordObject>(FindObjectsSortMode.None)),
