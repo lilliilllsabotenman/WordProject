@@ -14,9 +14,10 @@ public class TutorealNovelData
     public NovelGameSettings a;
 
     [Header("ここで文字スロット表示")]
-
+    public NovelAnimationSettings SlotActive;
 
     [Header("文字強調")]
+    public NovelAnimationSettings TextEmphasis;
 
     [Header("レスだ抜き解説２")]
     public NovelGameSettings c;
@@ -34,6 +35,7 @@ public class TutorealNovelData
     public NovelGameSettings g;
 
     [Header("演出")]
+    public NovelAnimationSettings WinEffect;
 
     [Header("最後の方の会話")]
     public NovelGameSettings h;
@@ -75,6 +77,7 @@ public class TutorealManagere : MonoBehaviour
     [SerializeField] private Image t1;
     
     private RoundManager roundManager;
+    private NovelAnimationManager animationManager;
 
     private readonly ViewUIText viewUIText;
     private readonly WordManager wordManager;
@@ -88,10 +91,11 @@ public class TutorealManagere : MonoBehaviour
     private bool bAnswer_2 = false;
     private bool GetWord = false;
 
-    private void Awake()
-    {
-    }
-
+private void Awake()
+{
+    animationManager = new NovelAnimationManager(
+        UnityEngine.Object.FindObjectsByType<NovelAnimationObject>(FindObjectsSortMode.None));
+}
     private void Clear()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("End");
@@ -110,15 +114,16 @@ public class TutorealManagere : MonoBehaviour
     
     private async Task Tutoreal()//Todoこれをループにまとめられると思うのでそうしろ！！演出含め！！これ書いたあほ間抜けは重罪
     {
-
-
+        // ===== 最初のやつ =====
         await novelEventManager.PlayAsync(tutorealData.a);
 
         await MassageExecuter.WaitUntilAsync(() => Input.GetMouseButtonDown(0));
 
+        // ===== ここで文字スロット表示 =====
         t1.gameObject.SetActive(false);       
         
 
+        // ===== 文字強調 =====
         while (true)
         {
             Color color = sentenceText.color;
@@ -144,6 +149,7 @@ public class TutorealManagere : MonoBehaviour
 
         await MassageExecuter.WaitUntilAsync(() => Input.GetMouseButtonDown(0));
 
+        // ===== レスだ抜き解説２ =====
         await novelEventManager.PlayAsync(tutorealData.c);
 
         
@@ -165,6 +171,7 @@ public class TutorealManagere : MonoBehaviour
         
         await MassageExecuter.WaitUntilAsync(() => GetWord);
 
+        // ===== レスだぬきブちぎれ =====
         while(!bAnswer_1)
         {
             foreach(GameObject w in wObj)
@@ -181,6 +188,7 @@ public class TutorealManagere : MonoBehaviour
         // t1.gameObject.SetActive(false); 
         t1.transform.SetSiblingIndex(9); 
 
+        // ===== レスだ抜きほめちぎり =====
         await novelEventManager.PlayAsync(tutorealData.e);
 
         GameObject aaa = null;
@@ -197,6 +205,7 @@ public class TutorealManagere : MonoBehaviour
 
         await MassageExecuter.WaitUntilAsync(() => Input.GetMouseButtonDown(0));
 
+        // ===== 二文字目 =====
         await novelEventManager.PlayAsync(tutorealData.f);
 
         Answer = Answer_2;
@@ -218,11 +227,15 @@ public class TutorealManagere : MonoBehaviour
             GetWord = false;
         }
 
-        t1.gameObject.SetActive(true); 
+        t1.gameObject.SetActive(true);
+
+        // ===== に文字とも正解 =====
         await novelEventManager.PlayAsync(tutorealData.g);
 
-        //演出
+        // ===== 演出 =====
+        await animationManager.PlayAnimation(tutorealData.WinEffect);
 
+        // ===== 最後の方の会話 =====
         await novelEventManager.PlayAsync(tutorealData.h);
     }
 

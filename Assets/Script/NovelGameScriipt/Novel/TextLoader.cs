@@ -247,7 +247,7 @@ namespace NovelGameDialogue
                     Debug.LogWarning($"Sprite update skipped: id={d.CharacterId}, state={d.State}, renderer={(character != null)}, sprite={(resolvedSprite != null)}");
                 }
 
-                if (optionData.dialogueText != null && !optionData.dialogueText.gameObject.activeSelf)
+                if (optionData.dialogueText != null && !optionData.dialogueText.gameObject.activeInHierarchy)
                 {
                     optionData.dialogueText.gameObject.SetActive(true);
 

@@ -25,8 +25,13 @@ public class NovelEventManager : MonoBehaviour
     [Header("キャラ名表示(未使用なら未設定でOK)")]
     [SerializeField] private TMPro.TextMeshProUGUI CharacterNamePlate;
 
-
     public bool isEvent;
+
+    [Header("終わった後に進むシーン")]
+    [SerializeField] private string SceneName;
+
+
+
 
     private TextAsset DialogueCSV;
     private TextDialogueOption textOption;
@@ -247,14 +252,26 @@ public class NovelEventManager : MonoBehaviour
     {
         foreach (NovelGameData setting in novelGameSettings)
         {
-            if(setting is NovelGameSettings csv)
+            if (setting is NovelGameSettings csv)
                 await PlayAsync(csv);
-            if(setting is NovelAnimationSettings anim)
+            if (setting is NovelAnimationSettings anim)
                 await animationManager.PlayAnimation(anim);
-                
         }
 
-        // UnityEngine.SceneManagement.SceneManager.LoadScene("SampleGameScene");
+        if (string.IsNullOrEmpty(SceneName))
+        {
+            Debug.LogError("SceneName が設定されていません。");
+            return;
+        }
+
+        int buildIndex = UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(SceneName);
+        if (buildIndex < 0)
+        {
+            Debug.LogError($"シーン '{SceneName}' が Build Settings に登録されていません。");
+            return;
+        }
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(SceneName);
     }
 
 #endregion

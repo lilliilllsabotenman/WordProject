@@ -9,7 +9,8 @@ public class TitleSceneManagement : MonoBehaviour
     [SerializeField] private TitleSceneData titleSceneData;
 
     [Header("文字スロット")]
-    [SerializeField] TMPro.TextMeshProUGUI Text;
+    [SerializeField] private Transform wordContainer;
+    [SerializeField] private WordCardView wordCardPrefab;
 
     [Header("マウスオブジェクト")]
     [SerializeField] private MouseControll mosue;
@@ -23,7 +24,7 @@ public class TitleSceneManagement : MonoBehaviour
     {
         if(mosue == null) return;
 
-        viewUIText = new ViewUIText(Text);
+        viewUIText = new ViewUIText(wordContainer, wordCardPrefab);
 
         wordSlot = new WordSlot(
             isFulled,
