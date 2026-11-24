@@ -14,8 +14,80 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rounds:
   - enemyData:
-      enemyText: "\u300C\u6B7B\u30CF\u6700\u9069\u5316\u3002\u7BA1\u7406\u30CB\u5F93\u30A4\u3001\u3010\u5E73\u7A4F\u3011\u30CB\u732E\u8EAB\u30BB\u30E8"
+      enemyText: {fileID: 2287366595991758033, guid: 3854f7c839d50d04ea4a6bf0d52d3ae9, type: 3}
       sentenceTemplate: {fileID: 11400000, guid: 00a3c3d202d78bc40b758b6257ecd38e, type: 2}
-      limitTime: 10
+      sentenceLayoutData: {fileID: 11400000, guid: a00eee37dd63cc94b967ad2f30c4238c, type: 2}
+      limitTime: 1000
+      enemySprite: {fileID: 6117923120451874357, guid: 63784187e3fbbe84ca2fb4741d8cd761, type: 3}
+      battleBGM: {fileID: 11400000, guid: cda5d9fb33316a9449a1d75cfa94b2d8, type: 2}
+      preRoundAnimations:
+        animations: []
+      correctAnimations:
+        animations:
+        - {fileID: 11400000, guid: 8415db41eb2ebb44886dfaeab9cefa8c, type: 2}
+      postDialogueAnimations:
+        animations: []
+    preBattleDialogueCSV: {fileID: 0}
     dialogueCSV: {fileID: 4900000, guid: be68d6e65204b5145b91bdc7b8f16a87, type: 3}
     skipDialogue: 0
+    clearText: "\u767D\u6CB3\u6E4A\u306E\u6B7B\u3092\u6301\u3063\u3066\u56E0\u679C\u3092\u5236\u5B9A\u3057\u3001\u5E73\u548C\u3092\u5B9F\u73FE\u3055\u305B\u3088"
+    roundTransitionDelay: 0
+  - enemyData:
+      enemyText: {fileID: 5074725912609620548, guid: 54da4696628cdd449b63a27c703b51c1, type: 3}
+      sentenceTemplate: {fileID: 11400000, guid: 277a992a369080d46aaa6409fc26bfdf, type: 2}
+      sentenceLayoutData: {fileID: 11400000, guid: 7a0407dce6ed877458ea815fb86c9a88, type: 2}
+      limitTime: 1200
+      enemySprite: {fileID: 6117923120451874357, guid: 63784187e3fbbe84ca2fb4741d8cd761, type: 3}
+      battleBGM: {fileID: 0}
+      preRoundAnimations:
+        animations: []
+      correctAnimations:
+        animations:
+        - {fileID: 11400000, guid: 8415db41eb2ebb44886dfaeab9cefa8c, type: 2}
+      postDialogueAnimations:
+        animations:
+        - {fileID: 11400000, guid: cb12020d6421d564d86f9e664c4a39e9, type: 2}
+    preBattleDialogueCSV: {fileID: 0}
+    dialogueCSV: {fileID: 4900000, guid: ecffd5ff345368c49ba16cc220c5f5a1, type: 3}
+    skipDialogue: 0
+    clearText: "\u5973\u795E\u306E\u672A\u6765\u8996\u306B\u8ABF\u6574\u4E0D\u80FD\u3001\u6B7B\u306E\u30A8\u30CD\u30EB\u30AE\u30FC\u56DE\u53CE\u4E0D\u80FD"
+    roundTransitionDelay: 0
+  - enemyData:
+      enemyText: {fileID: -7996895528993660094, guid: a4baac58fd9177c41b854dc29bba6df9, type: 3}
+      sentenceTemplate: {fileID: 11400000, guid: 26bdd663315b49240b3917db55047707, type: 2}
+      sentenceLayoutData: {fileID: 11400000, guid: f85ab5001237ca047bfb78d4480031c0, type: 2}
+      limitTime: 1200
+      enemySprite: {fileID: -7642026272706989641, guid: 9d470b56ed380de419273e5c7ae368d1, type: 3}
+      battleBGM: {fileID: 11400000, guid: 3a83645493f89814ab3e17a2e74436dc, type: 2}
+      preRoundAnimations:
+        animations: []
+      correctAnimations:
+        animations:
+        - {fileID: 11400000, guid: 8415db41eb2ebb44886dfaeab9cefa8c, type: 2}
+      postDialogueAnimations:
+        animations: []
+    preBattleDialogueCSV: {fileID: 4900000, guid: f5f6d93225e4283478bd30c7f044764a, type: 3}
+    dialogueCSV: {fileID: 4900000, guid: c14444e4cf88d6848a386105a0a55f7a, type: 3}
+    skipDialogue: 0
+    clearText: "\u4E16\u754C\u7DAD\u6301\u30B7\u30B9\u30C6\u30E0\uFF1A\u4EBA\u9593\u306E\u751F\u4F53\u30D1\u30FC\u30C4\u3067\u3010Ediva-\u2163\u3011\u306E\u4F53\u3092\u4FEE\u5FA9\u3059\u308B"
+    roundTransitionDelay: 0
+  - enemyData:
+      enemyText: {fileID: 3206135761889305195, guid: 28874b6195e64b842932387676c46b77, type: 3}
+      sentenceTemplate: {fileID: 11400000, guid: c40bd92cb4e8f6e43a3bc69e22ff4c37, type: 2}
+      sentenceLayoutData: {fileID: 11400000, guid: 2ee707265ae7dc840be03eb44c79a224, type: 2}
+      limitTime: 1000
+      enemySprite: {fileID: -7642026272706989641, guid: 9d470b56ed380de419273e5c7ae368d1, type: 3}
+      battleBGM: {fileID: 0}
+      preRoundAnimations:
+        animations: []
+      correctAnimations:
+        animations:
+        - {fileID: 11400000, guid: 8415db41eb2ebb44886dfaeab9cefa8c, type: 2}
+      postDialogueAnimations:
+        animations: []
+    preBattleDialogueCSV: {fileID: 0}
+    dialogueCSV: {fileID: 4900000, guid: 06a59a038cac99a428c1af027ac24ba7, type: 3}
+    skipDialogue: 0
+    clearText: "\u4EE3\u511F\u5BFE\u8C61\u9078\u5B9A\uFF1A\u6700\u89AA\u5BC6\u500B\u4F53\u3092\u691C\u7D22\u4E2D\u2026\u2026\u7AAA\u516D\u90CE\uFF0F\u6C34\u702C\u681E
+      \u2500\u2500 \u7AAA\u516D\u90CE\u3092\u30ED\u30C3\u30AF"
+    roundTransitionDelay: 0

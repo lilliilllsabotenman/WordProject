@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b7bb9175ac981241af5ce3bcb72bdc9, type: 3}
   m_Name: New Word Asset 3
   m_EditorClassIdentifier: 
-  displayText: "\u3046\u308B\u305B\u3047\u306A\u3041"
+  displayText: "\u7121\u610F\u8B58"
   textType: 0

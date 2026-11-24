@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Reflection;
+using System;
 using NovelGameDialogue;
 
 public struct SpriteRendererSnapshot
@@ -21,6 +23,51 @@ public struct SpriteRendererSnapshot
     {
         renderer.sprite = Sprite;
         renderer.color = Color;
+    }
+}
+
+// SpriteRenderer / UI Image のどちらを持つ対象でも preserveFinalState を安全に扱うためのスナップショット。
+public struct GraphicFinalStateSnapshot
+{
+    private readonly SpriteRenderer spriteRenderer;
+    private readonly Image image;
+    private readonly Sprite sprite;
+    private readonly Color color;
+
+    public GraphicFinalStateSnapshot(GameObject target)
+    {
+        spriteRenderer = target.GetComponent<SpriteRenderer>();
+        image = spriteRenderer == null ? target.GetComponent<Image>() : null;
+
+        if (spriteRenderer != null)
+        {
+            sprite = spriteRenderer.sprite;
+            color = spriteRenderer.color;
+        }
+        else if (image != null)
+        {
+            sprite = image.sprite;
+            color = image.color;
+        }
+        else
+        {
+            sprite = null;
+            color = default;
+        }
+    }
+
+    public void Apply()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sprite = sprite;
+            spriteRenderer.color = color;
+        }
+        else if (image != null)
+        {
+            image.sprite = sprite;
+            image.color = color;
+        }
     }
 }
 public struct TransformSnapshot
@@ -48,8 +95,10 @@ public class NovelAnimationExecuter
 {
     private PlayableGraph graph;
 
-    public async Task ExecuteAsync(Animator animator, AnimationClip clip)
+    public async Task ExecuteAsync(Animator animator, NovelAnimationSettings anim, Func<bool> autoAdvancePredicate = null)
     {
+        AnimationClip clip = anim.animationClip;
+
         animator.runtimeAnimatorController = null;
 
         graph = PlayableGraph.Create();
@@ -75,19 +124,32 @@ public class NovelAnimationExecuter
 
         playable.SetTime(clip.length);
 
-        // ★ Evaluate直後・Destroy直前にスナップショット
-        TransformSnapshot _transform = new TransformSnapshot(animator.transform);
-        SpriteRendererSnapshot _spriteRenderer = new SpriteRendererSnapshot(animator.GetComponent<SpriteRenderer>());
+        if (anim.preserveFinalState)
+        {
+            // ★ Evaluate直後・Destroy直前にスナップショット
+            TransformSnapshot _transform = new TransformSnapshot(animator.transform);
+            GraphicFinalStateSnapshot _graphic = new GraphicFinalStateSnapshot(animator.gameObject);
+
+            playable.SetTime(clip.length);
+            graph.Evaluate(Time.deltaTime);
+            graph.Destroy();
+
+            _transform.Apply(animator.gameObject.transform);
+            _graphic.Apply();
+        }
+        else
+        {
+            playable.SetTime(clip.length);
+            graph.Evaluate(Time.deltaTime);
+            graph.Destroy();
+        }
 
 
-        playable.SetTime(clip.length);
-        graph.Evaluate(Time.deltaTime); 
-        graph.Destroy();
-
-        _transform.Apply(animator.gameObject.transform);
-        _spriteRenderer.Apply(animator.gameObject.GetComponent<SpriteRenderer>());
-
-
-        await MassageExecuter.WaitUntilAsync(() => Input.GetMouseButton(0));
+        if (autoAdvancePredicate == null || !autoAdvancePredicate())
+        {
+            await MassageExecuter.WaitUntilAsync(() =>
+                Input.GetMouseButton(0)
+                || (autoAdvancePredicate != null && autoAdvancePredicate()));
+        }
     }
 }

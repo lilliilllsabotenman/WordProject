@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: respon
   m_EditorClassIdentifier: 
   characterId: respon
+  displayName: "\u30EC\u30B9\u307D\u3093\u305F"

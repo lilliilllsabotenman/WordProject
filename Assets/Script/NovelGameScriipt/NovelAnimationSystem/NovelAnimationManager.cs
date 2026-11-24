@@ -8,9 +8,12 @@ public class NovelAnimationManager
     private event Action AnimFinished;
     private Dictionary<AnimationKey, Animator> animatorData = new();
     private NovelAnimationExecuter animationExecuter = new();
-    
-    public NovelAnimationManager(NovelAnimationObject[] objects)
+    private readonly Func<bool> autoAdvancePredicate;
+
+    public NovelAnimationManager(NovelAnimationObject[] objects, Func<bool> autoAdvancePredicate = null)
     {
+        this.autoAdvancePredicate = autoAdvancePredicate;
+
         foreach(NovelAnimationObject anim in objects)
         {
             if(anim.TryGetAnimator(out Animator animator)) 
@@ -27,15 +30,22 @@ public class NovelAnimationManager
     }
 
 
-    public async Task PlayAnimation(NovelAnimationSettings anim)
+    public async Task PlayAnimation(NovelAnimationSettings anim, bool forceAutoAdvance = false)
     {
+        if (anim == null)
+        {
+            Debug.LogWarning("PlayAnimation: NovelAnimationSettingsが未設定です。演出をスキップします。");
+            return;
+        }
+
         if (!animatorData.TryGetValue(anim.animationKey, out Animator animator))
         {
             Debug.LogError($"Animatorが見つかりません: {anim.animationKey}");
             return;
         }
         Debug.Log("ExecuteAnimation");
-        await animationExecuter.ExecuteAsync(animatorData[anim.animationKey], anim.animationClip);
+        Func<bool> predicate = forceAutoAdvance ? (() => true) : autoAdvancePredicate;
+        await animationExecuter.ExecuteAsync(animatorData[anim.animationKey], anim, predicate);
         AnimFinished?.Invoke();
     }
 }

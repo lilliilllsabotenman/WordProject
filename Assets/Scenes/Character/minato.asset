@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: minato
   m_EditorClassIdentifier: 
   characterId: minato
+  displayName: "\u30B7\u30E9\u30AB\u30EF \u30DF\u30CA\u30C8"

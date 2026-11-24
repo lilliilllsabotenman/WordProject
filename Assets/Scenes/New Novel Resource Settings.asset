@@ -19,19 +19,29 @@ MonoBehaviour:
       spriteData:
       - CharacterKey: {fileID: 11400000, guid: aaf781a3681c5024e93a85226b0e1096, type: 2}
         KeyEnum: normal
-        CharactorSprite: {fileID: 1634114862732455561, guid: 5605a346772890c44908ae2224de5ecd, type: 3}
+        CharactorSprite: {fileID: -1016683154816544398, guid: 376dd26e21d01434e9b3af444754f40c, type: 3}
     - sr: {fileID: 11400000, guid: d82a83c0e992f7a41a1af5b12f75810e, type: 2}
       spriteData:
       - CharacterKey: {fileID: 11400000, guid: d82a83c0e992f7a41a1af5b12f75810e, type: 2}
         KeyEnum: normal
-        CharactorSprite: {fileID: 9068903083612988343, guid: bffa6105d9f848149b4a77bec45581bf, type: 3}
+        CharactorSprite: {fileID: 4704717350963120003, guid: dfa9e0294d8b1db4d9b8b94344b0b294, type: 3}
     - sr: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
       spriteData:
       - CharacterKey: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
         KeyEnum: normal
-        CharactorSprite: {fileID: 620405429636648041, guid: 790ddedadbfec72469af8816e7e1e7c3, type: 3}
-    - sr: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
+        CharactorSprite: {fileID: -4809831380759789733, guid: 0ac5d77614b45af4c9bb117b15de23a9, type: 3}
+    - sr: {fileID: 11400000, guid: 92c3b762fcb812d4c8a57cebaeb1fdea, type: 2}
       spriteData:
-      - CharacterKey: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
+      - CharacterKey: {fileID: 11400000, guid: 92c3b762fcb812d4c8a57cebaeb1fdea, type: 2}
         KeyEnum: respon
-        CharactorSprite: {fileID: 620405429636648041, guid: 790ddedadbfec72469af8816e7e1e7c3, type: 3}
+        CharactorSprite: {fileID: 5218823490559287709, guid: fcdb6696c54181e4097b3fe3dd2ae77e, type: 3}
+    - sr: {fileID: 11400000, guid: 04c57897114ed824e9a5d93d4fad08ac, type: 2}
+      spriteData:
+      - CharacterKey: {fileID: 11400000, guid: 04c57897114ed824e9a5d93d4fad08ac, type: 2}
+        KeyEnum: Angel
+        CharactorSprite: {fileID: 6117923120451874357, guid: 63784187e3fbbe84ca2fb4741d8cd761, type: 3}
+    - sr: {fileID: 11400000, guid: f47d9844867e5aa4592f9d9be8c80f8d, type: 2}
+      spriteData:
+      - CharacterKey: {fileID: 11400000, guid: f47d9844867e5aa4592f9d9be8c80f8d, type: 2}
+        KeyEnum: adam
+        CharactorSprite: {fileID: -3945523558648498756, guid: 722363f25ced7f34488967e9d8df64b9, type: 3}

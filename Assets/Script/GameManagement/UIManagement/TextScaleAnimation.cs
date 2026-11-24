@@ -10,7 +10,7 @@ public class TextScaleAnimation : MonoBehaviour
     private float speed = 3f;
 
     private Vector3 baseScale;
-    private TMPro.TextMeshProUGUI TMP;
+    private SpriteRenderer spriteRenderer;
 
     private float elapsedTime = 0f;
     private float limitTime = 0f;
@@ -20,7 +20,7 @@ public class TextScaleAnimation : MonoBehaviour
 
     private void Awake()
     {
-        TMP = this.GetComponent<TMPro.TextMeshProUGUI>();
+        spriteRenderer = this.GetComponent<SpriteRenderer>();
         baseScale = transform.localScale;
     }
 
@@ -46,9 +46,9 @@ public class TextScaleAnimation : MonoBehaviour
 
     public void InitializeEnemyText(EnemyData data, Action action)
     {
-        if(TMP == null) return;
+        if(spriteRenderer == null) return;
         transform.localScale = baseScale;
-        TMP.text = data.enemyText;
+        spriteRenderer.sprite = data.enemyText;
         elapsedTime = 0;
         limitTime = data.limitTime;
         isRunning = true;

@@ -12,5 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d539db9f37aef124f86555d32d38b539, type: 3}
   m_Name: New Sentence Layout Data
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  entries: []
+  sprite: {fileID: 2646325650313979158, guid: 6e2e63cff7a372f47852ab580d8b64b5, type: 3}
+  entries:
+  - displayText: "\u65B0\u898F"
+    isSlot: 0
+    position: {x: -608.57117, y: -16.313196}
+    size: {x: 296.1, y: 148.7}
+    spriteData: {fileID: 0}
+  - displayText: "\u65B0\u898F"
+    isSlot: 0
+    position: {x: 618.14526, y: -9.038708}
+    size: {x: 300.6, y: 149.3}
+    spriteData: {fileID: 0}
