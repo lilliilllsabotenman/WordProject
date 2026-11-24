@@ -1,22 +1,24 @@
 using UnityEngine;
+using TMPro;
 using System;
 
 [Serializable]
 public class LifeManager
 {
     [SerializeField] private GameObject[] objects;
+    [SerializeField] private TextMeshProUGUI lifeText;
 
     private int currentLife;
     private Action Finish;
 
-    private void Awake()
-    {
-        Initialize();
-    }
-
     public void Initialize()
     {
-        currentLife = objects.Length;
+        int ActiveObjectCount = 0;
+        foreach(var obj in objects)
+        {
+            if(obj.activeSelf) ActiveObjectCount ++;
+        }
+        currentLife = ActiveObjectCount;
         UpdateLifeDisplay();
     }
 
@@ -46,6 +48,11 @@ public class LifeManager
                 continue;
 
             objects[i].SetActive(i < currentLife);
+        }
+
+        if (lifeText != null)
+        {
+            lifeText.text = currentLife.ToString();
         }
     }
 }

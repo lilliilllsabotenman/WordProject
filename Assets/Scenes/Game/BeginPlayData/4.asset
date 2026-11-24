@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueType: 0
   DialogueCSV: {fileID: 4900000, guid: e15e7a371f8a8124c9ae95e83e7c14b8, type: 3}
+  textColor: {r: 1, g: 1, b: 1, a: 1}

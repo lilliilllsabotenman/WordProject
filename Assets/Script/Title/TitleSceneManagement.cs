@@ -1,7 +1,9 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine.SceneManagement;
+using MyTween;
 
 public class TitleSceneManagement : MonoBehaviour
 {
@@ -10,25 +12,33 @@ public class TitleSceneManagement : MonoBehaviour
 
     [Header("文字スロット")]
     [SerializeField] private Transform wordContainer;
-    [SerializeField] private WordCardView wordCardPrefab;
+
+    [Header("カード表示用テキスト(選んだ順に入る)")]
+    [SerializeField] private List<TextMeshProUGUI> sentenceSlots;
 
     [Header("マウスオブジェクト")]
-    [SerializeField] private MouseControll mosue;
+    [SerializeField] private MouseControllBase mosue;
+
+    [Header("判定後、次の処理までの間")]
+    [SerializeField] private float judgeDelay = 0.5f;
 
     private SentenceJudgement Judgement = new();
     private WordSlot wordSlot;
-    private ViewUIText viewUIText;
+    private SentenceCardPlacer placer;
+    private WordSlotFiller filler;
     private WordManager wordManager;
+    private int sentenceSlotIndex;
 
     private void Start()
     {
         if(mosue == null) return;
 
-        viewUIText = new ViewUIText(wordContainer, wordCardPrefab);
+        placer = new SentenceCardPlacer(wordContainer);
+        filler = new WordSlotFiller();
 
         wordSlot = new WordSlot(
             isFulled,
-            viewUIText);
+            filler);
 
         wordManager = new WordManager(
             new List<WordObject>(UnityEngine.Object.FindObjectsByType<WordObject>(FindObjectsSortMode.None)),
@@ -39,7 +49,6 @@ public class TitleSceneManagement : MonoBehaviour
 
         mosue.MouseSubscrive(GetWordAsset);
         SentenceInitialized();
-        wordManager.Initialize(titleSceneData.SceneData[0].SentenceData);
     }
 
     private void GetWordAsset(WordAsset word)
@@ -47,27 +56,56 @@ public class TitleSceneManagement : MonoBehaviour
         Debug.Log("GetWordAssets");
         if(wordSlot == null) return;
 
+        if (sentenceSlots != null && sentenceSlotIndex < sentenceSlots.Count && sentenceSlots[sentenceSlotIndex] != null)
+        {
+            sentenceSlots[sentenceSlotIndex].text = word.DisplayText;
+            sentenceSlotIndex++;
+        }
+
         wordSlot.AddWord(word);
     }
 
-    private void isFulled(List<WordAsset> words)
+    private async void isFulled(List<WordAsset> words)
     {
+        TitleActionData? matched = null;
+
         foreach(TitleActionData data in titleSceneData.SceneData)
         {
             if(Judgement.Judgement(data.SentenceData, words))
             {
-                ChangeScene(data.sceneName);
-                return;
+                matched = data;
+                break;
             }
+        }
+
+        await TweenActions.AnimateAsync(judgeDelay, null, _ => { });
+
+        if(matched.HasValue)
+        {
+            ChangeScene(matched.Value.sceneName);
+            return;
         }
 
         SentenceInitialized();
     }
 
     private void SentenceInitialized()
-    {   
+    {
         if(titleSceneData.SceneData.Count == 0) return;
-        wordSlot.Initialize(titleSceneData.SceneData[0].SentenceData);//どうせ全部一緒の内容で行けるようにしてあるから０番直指定
+
+        sentenceSlotIndex = 0;
+        if (sentenceSlots != null)
+        {
+            foreach (var slot in sentenceSlots)
+            {
+                if (slot != null) slot.text = string.Empty;
+            }
+        }
+
+        var template = titleSceneData.SceneData[0].SentenceData;
+        var slotCards = placer.Place(template, null);
+        wordSlot.Initialize(template, slotCards);//どうせ全部一緒の内容で行けるようにしてあるから０番直指定
+        wordManager.Initialize(template);
     }
 
     private void ChangeScene(string SceneName)

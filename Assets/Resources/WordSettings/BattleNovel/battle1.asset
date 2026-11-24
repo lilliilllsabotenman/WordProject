@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d539db9f37aef124f86555d32d38b539, type: 3}
+  m_Name: battle1
+  m_EditorClassIdentifier: Assembly-CSharp::SentenceLayoutData
+  sprite: {fileID: -5669508239181079564, guid: e4585273017f2b843a1d27489460b8ec, type: 3}
+  spriteSize: {x: 0, y: 0}
+  entries:
+  - displayText: 
+    isSlot: 1
+    position: {x: -652.3047, y: -15.423367}
+    size: {x: 326.9, y: 136.4}
+    spriteData: {fileID: 0}
+    previewWord: {fileID: 0}
+    overrideFontSize: 0
+    fontSizeOverride: 24
+  - displayText: 
+    isSlot: 1
+    position: {x: 45.874763, y: -12.391024}
+    size: {x: 317.96, y: 141.8}
+    spriteData: {fileID: 0}
+    previewWord: {fileID: 0}
+    overrideFontSize: 0
+    fontSizeOverride: 24
+  layoutScale: 0.8
+  fontSize: 80
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontAsset: {fileID: 11400000, guid: 4e804560a3afcdf4e95e9ba019907857, type: 2}
+  minFontSize: 14
+  charsAtMaxFontSize: 2
+  charsAtMinFontSize: 8
+  cardBackgroundPrefab: {fileID: 145339659927483324, guid: 6a82a6930600af842b2803a577d4c1c6, type: 3}

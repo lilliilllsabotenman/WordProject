@@ -9,4 +9,12 @@ public class NovelGameSettings : NovelGameData
 
     [Header("TextData")]
     public TextAsset DialogueCSV;
+
+    [Header("テキストカラー")]
+    public Color textColor = Color.white;
+
+    private void Reset()
+    {
+        textColor = dialogueType == DialogueType.Narration ? Color.white : Color.black;
+    }
 }

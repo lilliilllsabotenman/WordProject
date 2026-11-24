@@ -19,3 +19,9 @@ MonoBehaviour:
     characterKey: {fileID: 11400000, guid: d82a83c0e992f7a41a1af5b12f75810e, type: 2}
   - characterId: shiori
     characterKey: {fileID: 11400000, guid: 752b0cfa5df083d458e4303b11b51814, type: 2}
+  - characterId: respon
+    characterKey: {fileID: 11400000, guid: 92c3b762fcb812d4c8a57cebaeb1fdea, type: 2}
+  - characterId: Angel
+    characterKey: {fileID: 11400000, guid: 04c57897114ed824e9a5d93d4fad08ac, type: 2}
+  - characterId: adam
+    characterKey: {fileID: 11400000, guid: f47d9844867e5aa4592f9d9be8c80f8d, type: 2}

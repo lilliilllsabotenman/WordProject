@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: rokuro
   m_EditorClassIdentifier: 
   characterId: rokuro
+  displayName: "\u30AF\u30DC \u30ED\u30AF\u30ED\u30A6"

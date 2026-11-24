@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
@@ -74,6 +75,13 @@ namespace NovelGameDialogue
 
         [Header("キャラクターのデータ")]
         public List<CharactorToList> Character;
+
+        // シーン間で永続するため、遷移前に破棄済みの参照を持ち越さないようクリアする。
+        public void Clear()
+        {
+            CharacterText = null;
+            dialogueText = null;
+        }
     }
 
     public static class DialogueDataValidator
@@ -143,14 +151,25 @@ namespace NovelGameDialogue
         private readonly SpriteDictionary characterSprite;
         private readonly Dictionary<CharacterKey, CharacterSpriteRenderer> characterRegistry;
         private readonly Dictionary<string, CharacterSpriteRenderer> characterRegistryById;
+        private readonly CharacterKeyDatabase characterKeyDatabase;
+
+        // 早送り中かどうかをNovelEventManager側からSetSkipで明示的に制御する。
+        public bool IsSkip { get; private set; }
+
+        public void SetSkip(bool isSkip)
+        {
+            IsSkip = isSkip;
+        }
 
         public MassageExecuter(
             SpriteDictionary spriteDictionary,
-            Dictionary<CharacterKey, CharacterSpriteRenderer> registry)
+            Dictionary<CharacterKey, CharacterSpriteRenderer> registry,
+            CharacterKeyDatabase characterKeyDatabase = null)
         {
             characterSprite = spriteDictionary;
             characterRegistry = registry;
             characterRegistryById = BuildCharacterRegistryById(registry);
+            this.characterKeyDatabase = characterKeyDatabase;
         }
 
         private static Dictionary<string, CharacterSpriteRenderer> BuildCharacterRegistryById(
@@ -188,16 +207,21 @@ namespace NovelGameDialogue
             _ = StartDialogueAsync(optionData, gameData);
         }
 
-        public async Task StartDialogueAsync(TextDialogueOption optionData, List<DialogueData> gameData)
+        public async Task StartDialogueAsync(TextDialogueOption optionData, List<DialogueData> gameData, CancellationToken cancellationToken = default)
         {
             DialogueDataValidator.Validate(gameData, characterSprite);
-            await ShowDialogueSequenceAsync(optionData, gameData);
+            await ShowDialogueSequenceAsync(optionData, gameData, cancellationToken);
         }
 
-        public async Task ShowDialogueSequenceAsync(TextDialogueOption optionData, List<DialogueData> data)
+        public async Task ShowDialogueSequenceAsync(TextDialogueOption optionData, List<DialogueData> data, CancellationToken cancellationToken = default)
         {
             foreach (DialogueData d in data)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
                 string characterId = string.IsNullOrWhiteSpace(d.CharacterId) ? string.Empty : d.CharacterId.Trim();
                 string stateKey = string.IsNullOrWhiteSpace(d.State) ? string.Empty : d.State.Trim();
                 bool requiresSpriteUpdate =
@@ -205,13 +229,13 @@ namespace NovelGameDialogue
                     stateKey.Length > 0 &&
                     !IsNarrationMarker(characterId, stateKey);
 
-                SpriteRenderer character = null;
+                CharacterSpriteRenderer character = null;
                 if (requiresSpriteUpdate
                     && d.CharacterKey != null
                     && characterRegistry.TryGetValue(d.CharacterKey, out var rendererByKey)
                     && rendererByKey != null)
                 {
-                    character = rendererByKey.GetSpriteRenderer();
+                    character = rendererByKey;
                 }
 
                 if (requiresSpriteUpdate
@@ -219,7 +243,7 @@ namespace NovelGameDialogue
                     && characterRegistryById.TryGetValue(characterId, out var rendererById)
                     && rendererById != null)
                 {
-                    character = rendererById.GetSpriteRenderer();
+                    character = rendererById;
                 }
 
                 Sprite resolvedSprite = null;
@@ -239,8 +263,8 @@ namespace NovelGameDialogue
 
                 if (requiresSpriteUpdate && character != null && resolvedSprite != null)
                 {
-                    character.enabled = true;
-                    character.sprite = resolvedSprite;
+                    character.Visible = true;
+                    character.Sprite = resolvedSprite;
                 }
                 else if (requiresSpriteUpdate)
                 {
@@ -270,15 +294,22 @@ namespace NovelGameDialogue
                 if (optionData.dialogueText != null)
                 {
                     optionData.dialogueText.text = string.Empty;
+                    Debug.Log($"[ColorDebug] ShowLine obj={optionData.dialogueText.name}(id={optionData.dialogueText.GetInstanceID()}) " +
+                        $"active={optionData.dialogueText.gameObject.activeInHierarchy} colorNow={optionData.dialogueText.color}");
                 }
 
                 if (optionData.CharacterText != null)
                 {
-                    optionData.CharacterText.text = d.CharacterId;
+                    optionData.CharacterText.text = ResolveDisplayName(d.CharacterKey, characterId, d.CharacterId);
                 }
 
                 foreach (char c in line)
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
                     if (optionData.dialogueText != null)
                     {
                         optionData.dialogueText.text += c;
@@ -287,14 +318,26 @@ namespace NovelGameDialogue
                     await WaitForSecondsScaledAsync(optionData.typingSpeed);
                 }
 
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
                 await Task.Yield();
-                await WaitUntilAsync(() => Input.GetMouseButton(0));
-                await WaitUntilAsync(() => !Input.GetMouseButton(0));
+
+                if (!IsSkip)
+                {
+                    await WaitUntilAsync(() =>
+                        Input.GetMouseButton(0)
+                        || IsSkip
+                        || cancellationToken.IsCancellationRequested);
+                    await WaitUntilAsync(() => !Input.GetMouseButton(0) || cancellationToken.IsCancellationRequested);
+                }
 
                 if (character != null)
                 {
-                    character.sprite = null;
-
+                    character.Sprite = null;
+                    character.Visible = false;
 
 
                 }
@@ -321,6 +364,26 @@ namespace NovelGameDialogue
             }
 
             TextFinished();
+        }
+
+        // CharacterKey(スプライト解決結果)が無い/名前未設定でも、データベースから直接名前を引く。
+        private string ResolveDisplayName(CharacterKey key, string characterId, string fallbackId)
+        {
+            if (key != null && !string.IsNullOrWhiteSpace(key.DisplayName))
+            {
+                return key.DisplayName;
+            }
+
+            if (characterKeyDatabase != null)
+            {
+                CharacterKey fromDatabase = characterKeyDatabase.Get(characterId);
+                if (fromDatabase != null && !string.IsNullOrWhiteSpace(fromDatabase.DisplayName))
+                {
+                    return fromDatabase.DisplayName;
+                }
+            }
+
+            return fallbackId;
         }
 
         private static bool TryResolveSprite(

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animationKey: {fileID: 11400000, guid: 8b73fe7977ab7744dafd0649f8ea7b04, type: 2}
   animationClip: {fileID: 7400000, guid: 17ab531361433c048bfbec6fd489dab0, type: 2}
+  preserveFinalState: 0

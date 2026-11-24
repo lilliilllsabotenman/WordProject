@@ -5,4 +5,5 @@ public class NovelAnimationSettings : NovelGameData
 {
     public AnimationKey animationKey;
     public AnimationClip animationClip;
+    public bool preserveFinalState = true;
 }

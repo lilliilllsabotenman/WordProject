@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using NovelGameDialogue;
 using System.Threading.Tasks;
 using MyTween;
+
+
 
 public class NovelEventManager : MonoBehaviour
 {
@@ -25,28 +28,54 @@ public class NovelEventManager : MonoBehaviour
     [Header("キャラ名表示(未使用なら未設定でOK)")]
     [SerializeField] private TMPro.TextMeshProUGUI CharacterNamePlate;
 
+    [Header("BGM/SE再生用ハブ")]
+    [SerializeField] private SoundHub soundHub;
+
+    [Header("BGM音量上限(クロスフェード時にこの値を超えない)")]
+    [SerializeField, Range(0f, 1f)] private float bgmVolumeCap = 1f;
+
     public bool isEvent;
 
     [Header("終わった後に進むシーン")]
     [SerializeField] private string SceneName;
 
+    [Header("早送り設定")]
+    [SerializeField] private KeyCode fastForwardKey = KeyCode.LeftControl;
+    [SerializeField] [Range(0f, 0.5f)] private float fastForwardTypingSpeed = 0f;
 
+    [Header("マウスポインタ")]
+    [SerializeField] private MouseControllBase mouse;
 
-
-    private TextAsset DialogueCSV;
     private TextDialogueOption textOption;
     private SpriteDictionary spriteDictionary;
     private Dictionary<CharacterKey, CharacterSpriteRenderer> characterRegistry;
     private MassageExecuter mExecuter;
-    private NovelScheduler novelScheduler;
     private NovelAnimationManager animationManager;
+    private CancellationTokenSource dialogueCts;
+    private Task currentDialogueTask;
+    private float defaultTypingSpeed;
+    private bool isFastForwarding;
 
-    
+
     public bool IsPlaying { get; private set; }
     public event Action OnDialogueFinished;
 
-   private void Awake()
+    private void Awake()
     {
+        // commonResourceSettingsはシーンをまたいで永続するScriptableObjectなので、
+        // 前のシーンで破棄されたTextMeshPro参照が残っていないよう必ずクリアする。
+        commonResourceSettings?.option?.Clear();
+
+        if (commonResourceSettings != null && commonResourceSettings.option != null)
+        {
+            defaultTypingSpeed = commonResourceSettings.option.typingSpeed;
+        }
+
+        // このシーン自身のテキストUIも、前回の残留テキスト・アクティブ状態を引きずらないよう初期化する。
+        ResetTextUI(NarrationText);
+        ResetTextUI(CharacterDialogueText);
+        ResetTextUI(CharacterNamePlate);
+
         if (characterKeyDatabase != null)
         {
             characterKeyDatabase.BuildLookup();
@@ -104,13 +133,25 @@ public class NovelEventManager : MonoBehaviour
 
         mExecuter = new MassageExecuter(
             spriteDictionary,
-            characterRegistry);
+            characterRegistry,
+            characterKeyDatabase);
 
-        novelScheduler = new NovelScheduler(
-            new CharacterAnimationTargetResolver(characterRegistry),
-            new AnimationConverter(),
-            new RuntimeCommandConverter(),
-            new AnimationExecuter());
+                    if(mouse != null)
+        {
+            mouse.IsControll = false;
+        }
+        
+    }
+
+    private static void ResetTextUI(TMPro.TextMeshProUGUI text)
+    {
+        if (text == null)
+        {
+            return;
+        }
+
+        text.text = string.Empty;
+        text.gameObject.SetActive(false);
     }
 
     private void HideAllCharacters()
@@ -136,7 +177,8 @@ public class NovelEventManager : MonoBehaviour
     private void Start()
     {
         animationManager = new NovelAnimationManager(
-            UnityEngine.Object.FindObjectsByType<NovelAnimationObject>(FindObjectsSortMode.None));
+            UnityEngine.Object.FindObjectsByType<NovelAnimationObject>(FindObjectsSortMode.None),
+            () => mExecuter != null && mExecuter.IsSkip);
 
         if(isEvent) return;
         _ = Novel();
@@ -169,6 +211,12 @@ public class NovelEventManager : MonoBehaviour
             return;
         }
 
+        textOption.dialogueText.color = setting.textColor;
+
+        Debug.Log($"[ColorDebug] PlayAsync asset={setting.name} type={setting.dialogueType} " +
+            $"targetObj={textOption.dialogueText.name}(id={textOption.dialogueText.GetInstanceID()}) " +
+            $"wantColor={setting.textColor} appliedColor={textOption.dialogueText.color}");
+
         IsPlaying = true;
 
         List<DialogueData> dialogueData =
@@ -176,9 +224,12 @@ public class NovelEventManager : MonoBehaviour
                 setting.DialogueCSV,
                 characterKeyDatabase);
 
-        await mExecuter.StartDialogueAsync(
+        dialogueCts = new CancellationTokenSource();
+        currentDialogueTask = mExecuter.StartDialogueAsync(
             textOption,
-            dialogueData);
+            dialogueData,
+            dialogueCts.Token);
+        await currentDialogueTask;
 
         IsPlaying = false;
 
@@ -201,9 +252,12 @@ public class NovelEventManager : MonoBehaviour
                 csv,
                 characterKeyDatabase);
 
-        await mExecuter.StartDialogueAsync(
+        dialogueCts = new CancellationTokenSource();
+        currentDialogueTask = mExecuter.StartDialogueAsync(
             textOption,
-            dialogueData);
+            dialogueData,
+            dialogueCts.Token);
+        await currentDialogueTask;
 
         IsPlaying = false;
 
@@ -248,19 +302,36 @@ public class NovelEventManager : MonoBehaviour
 
 #region 会話ループ
 
+
+
     private async Task Novel()
     {
+        if(mouse != null)
+        {
+            mouse.IsControll = false;
+        }
+        
         foreach (NovelGameData setting in novelGameSettings)
         {
+            
+            Debug.Log("Run Text Loop");
             if (setting is NovelGameSettings csv)
                 await PlayAsync(csv);
             if (setting is NovelAnimationSettings anim)
                 await animationManager.PlayAnimation(anim);
+            if (setting is SoundData sound)
+                soundHub.Play(sound, bgmVolumeCap);
         }
+
+        if(mouse != null)
+        {
+            mouse.IsControll = true;
+        }
+
 
         if (string.IsNullOrEmpty(SceneName))
         {
-            Debug.LogError("SceneName が設定されていません。");
+           // Debug.LogError("SceneName が設定されていません。");
             return;
         }
 
@@ -271,9 +342,83 @@ public class NovelEventManager : MonoBehaviour
             return;
         }
 
+
         UnityEngine.SceneManagement.SceneManager.LoadScene(SceneName);
     }
 
 #endregion
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            _ = SkipToSceneAsync();
+        }
+
+        HandleFastForward();
+    }
+
+    private void HandleFastForward()
+    {
+        if (commonResourceSettings == null || commonResourceSettings.option == null)
+        {
+            return;
+        }
+
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Tutorial") return;
+
+        bool holding = Input.GetKey(fastForwardKey);
+
+        mExecuter?.SetSkip(holding);
+
+        if (holding && !isFastForwarding)
+        {
+            isFastForwarding = true;
+            commonResourceSettings.option.typingSpeed = fastForwardTypingSpeed;
+        }
+        else if (!holding && isFastForwarding)
+        {
+            isFastForwarding = false;
+            commonResourceSettings.option.typingSpeed = defaultTypingSpeed;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (isFastForwarding && commonResourceSettings != null && commonResourceSettings.option != null)
+        {
+            commonResourceSettings.option.typingSpeed = defaultTypingSpeed;
+        }
+
+        isFastForwarding = false;
+        mExecuter?.SetSkip(false);
+    }
+
+    private async Task SkipToSceneAsync()
+    {
+        // 実行中の会話コルーチンにキャンセルを伝え、実際に止まるまで待ってから遷移する。
+        // これをせずにLoadSceneだけ呼ぶと、裏で会話ループがゾンビ状態のまま動き続け、
+        // 新しいシーンのテキストに書き込みが競合して文字が割り込むことがある。
+        dialogueCts?.Cancel();
+
+        if (currentDialogueTask != null)
+        {
+            try
+            {
+                await currentDialogueTask;
+            }
+            catch
+            {
+                // キャンセルによる例外は無視する。
+            }
+        }
+        
+
+        // 次のシーンに破棄済みのTextMeshPro参照などを持ち越さないよう、共有データを解放してから遷移する。
+        commonResourceSettings?.option?.Clear();
+        IsPlaying = false;
+        OnDialogueFinished = null;
+
+    }
 
 }

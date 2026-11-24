@@ -14,6 +14,7 @@ public class NovelAnimationObject : MonoBehaviour
 
     public bool TryGetAnimator(out Animator result)
     {
+        if (animator == null) animator = GetComponent<Animator>();
         result = animator;
         return result != null;
     }

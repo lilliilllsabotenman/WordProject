@@ -83,6 +83,22 @@ namespace MyTween
         }
     }
 
+    public sealed class TextMeshProUGUIAdapter : IAlphaTarget
+    {
+        private readonly TMPro.TextMeshProUGUI text;
+
+        public TextMeshProUGUIAdapter(TMPro.TextMeshProUGUI text)
+        {
+            this.text = text;
+        }
+
+        public float Alpha
+        {
+            get => text.alpha;
+            set => text.alpha = Mathf.Clamp01(value);
+        }
+    }
+
     public sealed class AnimationTargetCapabilities
     {
         public IAlphaTarget AlphaTarget;

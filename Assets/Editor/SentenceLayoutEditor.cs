@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using TMPro;
 
 public class SentenceLayoutEditor : EditorWindow
 {
@@ -47,6 +48,9 @@ public class SentenceLayoutEditor : EditorWindow
             return;
         }
 
+        DrawFontSettingsRow();
+        DrawAutoShrinkSettingsRow();
+
         EditorGUILayout.BeginHorizontal();
         DrawCanvas();
         DrawPanel();
@@ -68,6 +72,15 @@ public class SentenceLayoutEditor : EditorWindow
             EditorGUI.BeginChangeCheck();
             data.sprite = (Sprite)EditorGUILayout.ObjectField(
                 data.sprite, typeof(Sprite), false, GUILayout.Width(150));
+
+            GUILayout.Label("Size:", EditorStyles.toolbarButton, GUILayout.Width(34));
+            data.spriteSize = EditorGUILayout.Vector2Field(
+                GUIContent.none, data.spriteSize, GUILayout.Width(120));
+
+            GUILayout.Label("カード背景Prefab:", EditorStyles.toolbarButton, GUILayout.Width(100));
+            data.cardBackgroundPrefab = (GameObject)EditorGUILayout.ObjectField(
+                data.cardBackgroundPrefab, typeof(GameObject), false, GUILayout.Width(150));
+
             if (EditorGUI.EndChangeCheck()) { EditorUtility.SetDirty(data); Repaint(); }
         }
 
@@ -90,6 +103,62 @@ public class SentenceLayoutEditor : EditorWindow
             RemoveSelected();
         GUI.enabled = true;
 
+        EditorGUILayout.EndHorizontal();
+    }
+
+    // ── 文字のデフォルト設定 ───────────────────────────
+    private void DrawFontSettingsRow()
+    {
+        EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+
+        EditorGUI.BeginChangeCheck();
+
+        GUILayout.Label("全体倍率:", EditorStyles.toolbarButton, GUILayout.Width(50));
+        data.layoutScale = EditorGUILayout.FloatField(data.layoutScale, GUILayout.Width(40));
+
+        GUILayout.Label("Font Size:", EditorStyles.toolbarButton, GUILayout.Width(60));
+        data.fontSize = EditorGUILayout.FloatField(data.fontSize, GUILayout.Width(40));
+
+        GUILayout.Label("Color:", EditorStyles.toolbarButton, GUILayout.Width(44));
+        data.fontColor = EditorGUILayout.ColorField(data.fontColor, GUILayout.Width(60));
+
+        GUILayout.Label("Font Asset:", EditorStyles.toolbarButton, GUILayout.Width(72));
+        data.fontAsset = (TMP_FontAsset)EditorGUILayout.ObjectField(
+            data.fontAsset, typeof(TMP_FontAsset), false, GUILayout.Width(150));
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorUtility.SetDirty(data);
+            Repaint();
+        }
+
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.EndHorizontal();
+    }
+
+    // ── 文字数によるフォント自動縮小のグローバル設定 ─────
+    private void DrawAutoShrinkSettingsRow()
+    {
+        EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+
+        EditorGUI.BeginChangeCheck();
+
+        GUILayout.Label("最小Font:", EditorStyles.toolbarButton, GUILayout.Width(56));
+        data.minFontSize = EditorGUILayout.FloatField(data.minFontSize, GUILayout.Width(40));
+
+        GUILayout.Label("最大サイズ維持〜文字:", EditorStyles.toolbarButton, GUILayout.Width(130));
+        data.charsAtMaxFontSize = EditorGUILayout.IntField(data.charsAtMaxFontSize, GUILayout.Width(30));
+
+        GUILayout.Label("最小サイズ到達〜文字:", EditorStyles.toolbarButton, GUILayout.Width(130));
+        data.charsAtMinFontSize = EditorGUILayout.IntField(data.charsAtMinFontSize, GUILayout.Width(30));
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorUtility.SetDirty(data);
+            Repaint();
+        }
+
+        GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
     }
 
@@ -175,8 +244,9 @@ public class SentenceLayoutEditor : EditorWindow
         {
             var tex  = data.sprite.texture;
             var rect = data.sprite.rect;
-            float w  = rect.width  * zoom;
-            float h  = rect.height * zoom;
+            var displaySize = (data.spriteSize != Vector2.zero ? data.spriteSize : rect.size) * data.layoutScale;
+            float w  = displaySize.x * zoom;
+            float h  = displaySize.y * zoom;
             var drawRect = new Rect(center.x - w * 0.5f, center.y - h * 0.5f, w, h);
             var uv = new Rect(
                 rect.x / tex.width,  rect.y / tex.height,
@@ -204,8 +274,8 @@ public class SentenceLayoutEditor : EditorWindow
     private void DrawCard(Vector2 spriteCenter, int i, Event e)
     {
         var entry    = data.entries[i];
-        var center   = spriteCenter + entry.position * zoom * new Vector2(1f, -1f);
-        var cardSize = entry.size * zoom;
+        var center   = spriteCenter + entry.position * data.layoutScale * zoom * new Vector2(1f, -1f);
+        var cardSize = entry.size * data.layoutScale * zoom;
         var cardRect = new Rect(
             center.x - cardSize.x * 0.5f,
             center.y - cardSize.y * 0.5f,
@@ -218,9 +288,22 @@ public class SentenceLayoutEditor : EditorWindow
         EditorGUI.DrawRect(cardRect, bg);
         DrawBorder(cardRect, selected ? Color.yellow : new Color(0.5f, 0.5f, 0.5f));
 
-        int fontSize = Mathf.Max(8, Mathf.RoundToInt(11 * zoom));
+        string previewText = entry.isSlot
+            ? (entry.previewWord != null ? entry.previewWord.DisplayText : string.Empty)
+            : entry.displayText;
+
+        float previewFontSize = entry.overrideFontSize
+            ? entry.fontSizeOverride
+            : WordCardView.ComputeFontSize(
+                previewText?.Length ?? 0,
+                data.fontSize,
+                data.minFontSize,
+                data.charsAtMaxFontSize,
+                data.charsAtMinFontSize);
+
+        int fontSize = Mathf.Max(6, Mathf.RoundToInt(previewFontSize * data.layoutScale * zoom));
         GUI.Label(cardRect,
-            entry.isSlot ? $"[{entry.displayText}]" : entry.displayText,
+            entry.isSlot ? $"[{previewText}]" : previewText,
             new GUIStyle(EditorStyles.label)
             {
                 alignment = TextAnchor.MiddleCenter,
@@ -244,7 +327,7 @@ public class SentenceLayoutEditor : EditorWindow
         {
             // マウスの移動量をズームで割ってワールド座標に変換
             var delta = e.mousePosition - dragStart;
-            data.entries[selectedIndex].position = originalPos + new Vector2(delta.x, -delta.y) / zoom;
+            data.entries[selectedIndex].position = originalPos + new Vector2(delta.x, -delta.y) / (zoom * data.layoutScale);
             EditorUtility.SetDirty(data);
             Repaint();
             e.Use();
@@ -288,6 +371,20 @@ public class SentenceLayoutEditor : EditorWindow
         GUILayout.Space(4);
         entry.spriteData  = (PlayerTextSpriteData)EditorGUILayout.ObjectField(
             "スプライトデータ", entry.spriteData, typeof(PlayerTextSpriteData), false);
+
+        if (entry.isSlot)
+        {
+            GUILayout.Space(4);
+            entry.previewWord = (WordAsset)EditorGUILayout.ObjectField(
+                "プレビュー用単語(見た目確認のみ)", entry.previewWord, typeof(WordAsset), false);
+        }
+
+        GUILayout.Space(4);
+        entry.overrideFontSize = EditorGUILayout.Toggle("フォントサイズ手動指定", entry.overrideFontSize);
+        if (entry.overrideFontSize)
+        {
+            entry.fontSizeOverride = EditorGUILayout.FloatField("フォントサイズ", entry.fontSizeOverride);
+        }
 
         if (entry.spriteData?.sprite != null)
         {

@@ -6,20 +6,23 @@ public class WordSlot
     private SentenceTemplate AnswerSentence;
     private List<WordAsset> AnswerWordList = new();
     private List<WordAsset> words = new();
-    private ViewUIText viewUIText;
+    private WordSlotFiller filler;
 
     private event Action<List<WordAsset>> isFulled;
-    
+    private event Action wordPlaced;
+
 
     public WordSlot(
         Action<List<WordAsset>> action,
-        ViewUIText viewUIText)
+        WordSlotFiller filler,
+        Action onWordPlaced = null)
     {
         isFulled += action;
-        this.viewUIText = viewUIText;
+        this.filler = filler;
+        if (onWordPlaced != null) wordPlaced += onWordPlaced;
     }
 
-    public void Initialize(SentenceTemplate answer)
+    public void Initialize(SentenceTemplate answer, List<WordCardView> slotCards)
     {
         AnswerWordList.Clear();
         AnswerSentence = answer;
@@ -27,15 +30,17 @@ public class WordSlot
 
         words.Clear();
 
-        viewUIText.TextInitialize(AnswerSentence);
+        filler.Initialize(slotCards);
     }
 
     public void AddWord(WordAsset WordAsset)
     {
         words.Add(WordAsset);
-        viewUIText.AddWord(WordAsset);
+        filler.AddWord(WordAsset);
 
         UnityEngine.Debug.Log(words.Count);
+
+        wordPlaced?.Invoke();
 
         if(words.Count >= AnswerWordList.Count)//設定されたスロットが全部埋まったか確認
             isFulled?.Invoke(words);
