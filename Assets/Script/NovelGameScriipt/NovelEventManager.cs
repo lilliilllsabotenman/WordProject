@@ -301,9 +301,6 @@ public class NovelEventManager : MonoBehaviour
     }
 
 #region 会話ループ
-
-
-
     private async Task Novel()
     {
         if(mouse != null)
